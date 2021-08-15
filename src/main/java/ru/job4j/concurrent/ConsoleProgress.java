@@ -12,14 +12,14 @@ public class ConsoleProgress implements Runnable {
                 }
             }
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            Thread.currentThread().interrupt();
         }
     }
 
     public static void main(String[] args) throws InterruptedException {
         Thread progress = new Thread(new ConsoleProgress());
         progress.start();
-        Thread.sleep(10000); /* симулируем выполнение параллельной задачи в течение 1 секунды. */
+        Thread.sleep(5000); /* симулируем выполнение параллельной задачи в течение 1 секунды. */
         progress.interrupt();
     }
 }

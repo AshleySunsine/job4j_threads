@@ -6,8 +6,8 @@ public class ConsoleProgress implements Runnable {
         String[] process = {"-", "\\", "|", "/"};
         try {
             while (!Thread.currentThread().isInterrupted()) {
-                for (int i = 0; i < 4; i++) {
-                    System.out.print("\r load: " + process[i]);
+                for (String s : process) {
+                    System.out.print("\r load: " + s);
                     Thread.sleep(500);
                 }
             }

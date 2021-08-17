@@ -43,12 +43,16 @@ public class Wget implements Runnable {
     }
 
     public static void main(String[] args) throws InterruptedException {
-       // String url = args[0];
-       // int speed = Integer.parseInt(args[1]);
-        String url = "https://raw.githubusercontent.com/peterarsentev/course_test/master/pom.xml";
-        int speed = 1024;
-        Thread wget = new Thread(new Wget(url, speed));
-        wget.start();
-        wget.join();
+       if ((args.length != 2)
+               || (args[0].isEmpty())
+               || (args[1].isEmpty())) {
+           String url = args[0];
+           int speed = Integer.parseInt(args[1]);
+           Thread wget = new Thread(new Wget(url, speed));
+           wget.start();
+           wget.join();
+       } else {
+           System.out.println("Неверные входные параметры программы");
+       }
     }
 }

@@ -5,17 +5,14 @@ public final class DCLSingleton {
     private static volatile DCLSingleton inst;
 
     public static DCLSingleton instOf() {
-        DCLSingleton localInst = inst;
-        if (localInst == null) {
+        if (inst == null) {
             synchronized (DCLSingleton.class) {
-                localInst = inst;
-                if (localInst == null) {
-                    localInst = new DCLSingleton();
-                    inst = localInst;
+                if (inst == null) {
+                    inst = new DCLSingleton();
                 }
             }
         }
-        return localInst;
+        return inst;
     }
 
     private DCLSingleton() {

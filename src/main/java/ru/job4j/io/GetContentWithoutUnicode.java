@@ -1,9 +1,14 @@
 package ru.job4j.io;
 
+import net.jcip.annotations.GuardedBy;
+import net.jcip.annotations.ThreadSafe;
+
 import java.io.*;
 import java.util.function.Predicate;
 
+@ThreadSafe
 public class GetContentWithoutUnicode implements GetFileContent {
+    @GuardedBy("this")
     private final File file;
 
     public GetContentWithoutUnicode(File file) {

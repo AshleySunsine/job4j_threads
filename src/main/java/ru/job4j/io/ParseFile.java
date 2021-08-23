@@ -1,9 +1,14 @@
 package ru.job4j.io;
 
+import net.jcip.annotations.GuardedBy;
+import net.jcip.annotations.ThreadSafe;
+
 import java.io.*;
 import java.util.Objects;
 
+@ThreadSafe
 public class ParseFile {
+    @GuardedBy("this")
     private final File file;
 
     public ParseFile(File file) {

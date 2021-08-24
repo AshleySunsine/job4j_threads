@@ -3,14 +3,12 @@ package ru.job4j.storage;
 import net.jcip.annotations.GuardedBy;
 import net.jcip.annotations.ThreadSafe;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @ThreadSafe
 public class UserStorage implements Storage {
     @GuardedBy("this")
-    private volatile List<User> users = new ArrayList<>();
+    private final Map<Integer, User> users = new HashMap<>();
 
     @Override
     public synchronized boolean transfer(int fromId, int toId, int amount) {
@@ -33,7 +31,7 @@ public class UserStorage implements Storage {
     public synchronized boolean add(User user) {
         Optional<User> userItem = searchUser(user.getId());
         if (userItem.isEmpty()) {
-            users.add(user);
+            users.put(user.getId(), user);
             return true;
         }
         return false;
@@ -44,8 +42,8 @@ public class UserStorage implements Storage {
         Optional<User> userItem = searchUser(user.getId());
         if (userItem.isPresent()) {
             User item = userItem.get();
-            users.remove(item);
-            users.add(user);
+            users.remove(item.getId(), item);
+            users.put(user.getId(), user);
             return true;
         }
         return false;
@@ -55,16 +53,16 @@ public class UserStorage implements Storage {
     public synchronized boolean delete(User user) {
         Optional<User> userItem = searchUser(user.getId());
         if (userItem.isPresent()) {
-            users.remove(userItem.get());
+            users.remove(userItem.get().getId(), userItem.get());
             return true;
         }
         return false;
     }
 
     private synchronized Optional<User> searchUser(int id) {
-        for (var i : users) {
-            if (i.getId() == id) {
-                return Optional.of(i);
+        for (var i : users.entrySet()) {
+            if (i.getValue().getId() == id) {
+                return Optional.of(i.getValue());
             }
         }
         return Optional.empty();

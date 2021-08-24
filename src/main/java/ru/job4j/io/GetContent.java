@@ -19,14 +19,13 @@ public class GetContent implements GetFileContent {
     public synchronized String content(Predicate<Character> filter) {
         StringBuilder output = new StringBuilder();
         try (BufferedInputStream i = new BufferedInputStream(new FileInputStream(file))) {
-        int data;
-        while ((data = i.read()) > 0) {
-            char c = Integer.toString(data).charAt(0);
-            if (filter.test(c)) {
-                output.append(c);
+            int data;
+            while ((data = i.read()) > 0) {
+                if (filter.test((char) data)) {
+                    output.append(data);
+                }
             }
-        }
-    } catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return output.toString();

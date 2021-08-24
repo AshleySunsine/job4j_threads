@@ -21,7 +21,7 @@ public class ParseFile {
     }
 
     public synchronized String getContentWithoutUnicode() throws IOException {
-        final GetFileContent getContent = new GetContentWithoutUnicode(file);
+        final GetFileContent getContent = new GetContent(file);
         return getContent.content(i -> i < 0x08);
     }
 }

@@ -30,7 +30,7 @@ public class ParallelSearch {
 
         final Thread consumer = new Thread(
                 () -> {
-                    while (!Thread.currentThread().isInterrupted()) {
+                    while (!provider.isInterrupted()) {
                         System.out.println(queue.poll());
                         System.out.println("AAA");
                     }

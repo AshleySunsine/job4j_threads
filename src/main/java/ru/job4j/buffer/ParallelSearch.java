@@ -17,35 +17,31 @@ public class ParallelSearch {
                             e.printStackTrace();
                         }
                     }
-                    try {
-                        Thread.sleep(1000);
-                        Thread.currentThread().interrupt();
-                        System.out.println("STOPP provider");
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                    }
-
+                    Thread.currentThread().interrupt();
+                    System.out.println(Thread.currentThread().getName() + "  " + Thread.currentThread().getState());
                 }
         );
 
         final Thread consumer = new Thread(
                 () -> {
-                    while (!provider.isInterrupted()) {
-                        System.out.println(queue.poll());
-                        System.out.println("AAA");
-                    }
-                    try {
-                        Thread.sleep(2000);
-                        Thread.currentThread().interrupt();
-                        System.out.println("STOPP costomer");
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
+                    while (!(provider.isInterrupted())) {
+                        try {
+                            System.out.println(queue.poll());
+                            System.out.println("AAA");
+                            Thread.sleep(1);
+                            System.out.println("bbb");
+                        } catch (InterruptedException e) {
+                            Thread.currentThread().interrupt();
+                            System.out.println("UUU");
+                            break;
+                        }
                     }
                 }
         );
-        consumer.start();
         provider.start();
-        consumer.join();
+        consumer.start();
         provider.join();
+        consumer.join();
+
     }
 }

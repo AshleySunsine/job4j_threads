@@ -6,38 +6,33 @@ public class ParallelSearch {
 
     public static void main(String[] args) throws InterruptedException {
         SimpleBlockingQueue<Integer> queue = new SimpleBlockingQueue<>(3);
-        final Thread provider = new Thread(
+        final Thread consumer = new Thread(
                 () -> {
-                    for (int index = 0; index != 3; index++) {
-                        queue.offer(index);
+                    while (!(Thread.currentThread().isInterrupted())) {
                         try {
-                            Thread.sleep(500);
+                            System.out.println(queue.poll());
                         } catch (InterruptedException e) {
-                            Thread.currentThread().interrupt();
                             e.printStackTrace();
+                            Thread.currentThread().interrupt();
                         }
                     }
-                    Thread.currentThread().interrupt();
-                    System.out.println(Thread.currentThread().getName() + "  " + Thread.currentThread().getState());
                 }
         );
 
-        final Thread consumer = new Thread(
+        final Thread provider = new Thread(
                 () -> {
-                    while (!(provider.isInterrupted())) {
-                        try {
-                            System.out.println(queue.poll());
-                            System.out.println("AAA");
-                            Thread.sleep(1);
-                            System.out.println("bbb");
-                        } catch (InterruptedException e) {
-                            Thread.currentThread().interrupt();
-                            System.out.println("UUU");
-                            break;
+                    try {
+                        for (int index = 0; index != 3; index++) {
+                            queue.offer(index);
+                            Thread.sleep(50);
                         }
+                        consumer.interrupt();
+                    } catch (Exception e) {
+                        Thread.currentThread().interrupt();
                     }
                 }
         );
+
         provider.start();
         consumer.start();
         provider.join();

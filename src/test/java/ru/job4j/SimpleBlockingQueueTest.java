@@ -14,18 +14,26 @@ public class SimpleBlockingQueueTest {
         List<Integer> list = new ArrayList<>(List.of(4, 6, 54, 76, 98, 1000));
         List<Integer> except = new ArrayList<>();
         Thread master = new Thread(() -> {
-            for (var i : list) {
-                queue.offer(i);
+            try {
+                for (var i : list) {
+                    queue.offer(i);
+                }
             }
-        });
+        catch (Exception e) {
+            e.printStackTrace();
+        }});
         Thread slave = new Thread(() ->{
+            try {
             except.add(queue.poll());
             except.add(queue.poll());
             except.add(queue.poll());
             except.add(queue.poll());
             except.add(queue.poll());
             except.add(queue.poll());
-        });
+        }
+            catch (Exception e) {
+                e.printStackTrace();
+            }});
         master.start();
         slave.start();
         master.join();

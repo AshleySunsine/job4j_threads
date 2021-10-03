@@ -7,7 +7,7 @@ import java.util.Objects;
 @ThreadSafe
 public class User {
     private final int id;
-    private final int amount;
+    private int amount;
 
     public User(int id, int amount) {
         this.id = id;
@@ -21,6 +21,10 @@ public class User {
     public synchronized int getAmount() {
         return amount;
     }
+    public synchronized void setAmount(int newAmount) {
+        this.amount = newAmount;
+    }
+
 
     @Override
     public boolean equals(Object o) {

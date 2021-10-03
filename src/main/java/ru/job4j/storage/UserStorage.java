@@ -15,48 +15,26 @@ public class UserStorage implements Storage {
         Optional<User> userFromOpt = searchUser(fromId);
         Optional<User> userToOpt = searchUser(toId);
         if (userFromOpt.isPresent() && userToOpt.isPresent()) {
-            User userFrom = userFromOpt.get();
-            User userTo = userToOpt.get();
-            User newUserTo = new User(userTo.getId(), userTo.getAmount() + amount);
-            User newUserFrom = new User(userFrom.getId(), userFrom.getAmount() - amount);
-            return delete(userTo)
-                    && delete(userFrom)
-                    && add(newUserTo)
-                    && add(newUserFrom);
+            userFromOpt.get().setAmount(userFromOpt.get().getAmount() - amount);
+            userToOpt.get().setAmount(userToOpt.get().getAmount() + amount);
+            return true;
         }
         return false;
     }
 
     @Override
     public synchronized boolean add(User user) {
-        Optional<User> userItem = searchUser(user.getId());
-        if (userItem.isEmpty()) {
-            users.put(user.getId(), user);
-            return true;
-        }
-        return false;
+        return users.putIfAbsent(user.getId(), user) != null;
     }
 
     @Override
     public synchronized boolean update(User user) {
-        Optional<User> userItem = searchUser(user.getId());
-        if (userItem.isPresent()) {
-            User item = userItem.get();
-            users.remove(item.getId(), item);
-            users.put(user.getId(), user);
-            return true;
-        }
-        return false;
+        return users.replace(user.getId(), user) != null;
     }
 
     @Override
     public synchronized boolean delete(User user) {
-        Optional<User> userItem = searchUser(user.getId());
-        if (userItem.isPresent()) {
-            users.remove(userItem.get().getId(), userItem.get());
-            return true;
-        }
-        return false;
+        return users.remove(user.getId(), user);
     }
 
     private synchronized Optional<User> searchUser(int id) {
@@ -66,5 +44,22 @@ public class UserStorage implements Storage {
             }
         }
         return Optional.empty();
+    }
+
+    public void printState() {
+        for (var u : users.entrySet()) {
+            System.out.println("user: " + u.getValue().getId() + " " + "has amount: " + u.getValue().getAmount());
+        }
+    }
+
+    public static void main(String[] args) {
+       User user1 =  new User(1, 20000);
+       User user2 = new User(2, 30000);
+        UserStorage userStorage = new UserStorage();
+        userStorage.add(user1);
+        userStorage.add(user2);
+
+        userStorage.transfer(1, 2, 5000);
+        userStorage.printState();
     }
 }

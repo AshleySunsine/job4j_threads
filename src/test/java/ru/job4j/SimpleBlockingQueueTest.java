@@ -18,11 +18,11 @@ public class SimpleBlockingQueueTest {
                 for (var i : list) {
                     queue.offer(i);
                 }
-            }
-        catch (Exception e) {
+            } catch (Exception e) {
             e.printStackTrace();
-        }});
-        Thread slave = new Thread(() ->{
+        }
+        });
+        Thread slave = new Thread(() -> {
             try {
             except.add(queue.poll());
             except.add(queue.poll());
@@ -30,10 +30,10 @@ public class SimpleBlockingQueueTest {
             except.add(queue.poll());
             except.add(queue.poll());
             except.add(queue.poll());
-        }
-            catch (Exception e) {
+        } catch (Exception e) {
                 e.printStackTrace();
-            }});
+            }
+        });
         master.start();
         slave.start();
         master.join();

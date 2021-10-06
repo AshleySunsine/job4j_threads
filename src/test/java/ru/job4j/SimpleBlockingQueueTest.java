@@ -82,7 +82,7 @@ public class SimpleBlockingQueueTest {
         producer.join();
         consumer.interrupt();
         consumer.join();
-        assertThat(buffer, is(Arrays.asList(0,1,2,3,4)));
+        assertThat(buffer, is(Arrays.asList(0, 1, 2, 3, 4)));
     }
 
     @Test
@@ -119,7 +119,7 @@ public class SimpleBlockingQueueTest {
         putThread.join();
         getThread.interrupt();
         getThread.join();
-        assertThat(finishList, is(Arrays.asList(0,1,2,3,4)));
+        assertThat(finishList, is(Arrays.asList(0, 1, 2, 3, 4)));
     }
 
 }

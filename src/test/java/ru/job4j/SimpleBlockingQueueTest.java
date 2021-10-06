@@ -93,7 +93,7 @@ public class SimpleBlockingQueueTest {
         Thread putThread = new Thread(
                 () -> {
                     try {
-                        for (int i = 0; i < 5; i++) {  //for - для разнообразия
+                        for (int i = 0; i < 5; i++) {
                             queue.offer(i);
                         }
                     } catch (InterruptedException e) {

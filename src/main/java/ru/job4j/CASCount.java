@@ -8,7 +8,11 @@ import java.util.concurrent.atomic.AtomicReference;
 public class CASCount {
     private final AtomicReference<Integer> count = new AtomicReference<>();
 
-    public CASCount(int start) { // стартовое значение счётчика
+    /**
+     *
+     * @param start - стартовое значение счётчика
+     */
+    public CASCount(int start) {
         this.count.set(start);
     }
 

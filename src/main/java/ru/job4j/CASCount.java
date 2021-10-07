@@ -8,30 +8,23 @@ import java.util.concurrent.atomic.AtomicReference;
 public class CASCount {
     private final AtomicReference<Integer> count = new AtomicReference<>();
 
-    /**
-     *
-     * @param start - стартовое значение счётчика
-     */
     public CASCount(int start) {
         this.count.set(start);
     }
 
     public void increment() {
-        boolean ok;
+        int now;
+        int next;
         do {
-            int now = count.get();
-            int next = now + 1;
-            ok = this.count.compareAndSet(now, next);
-        } while (!ok);
+            now = count.get();
+            next = now + 1;
+        } while (!this.count.compareAndSet(now, next));
     }
 
     public int get() {
         return count.get();
     }
 
-    /**
-     * Вызовем инкремент по 5 раз из разных потоков
-     */
     public static void main(String[] args) throws InterruptedException {
         CASCount casCount = new CASCount(0);
         Thread first = new Thread(() -> {
@@ -48,7 +41,6 @@ public class CASCount {
         }
         );
         second.start();
-
         first.join();
         second.join();
         first.interrupt();

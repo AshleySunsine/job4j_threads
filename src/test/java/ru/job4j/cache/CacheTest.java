@@ -65,12 +65,12 @@ public class CacheTest {
         Cache cache = new Cache();
         Base base = new Base(1, 0);
         cache.add(base);
-        Thread first = new Thread( () -> {
+        Thread first = new Thread(() -> {
             Base user1 = cache.get(1);
             user1.setName("User 1");
             cache.update(user1);
         });
-        Thread second = new Thread( () -> {
+        Thread second = new Thread(() -> {
             Base user1 = cache.get(1);
             user1.setName("User 222");
             cache.update(user1);

@@ -1,52 +1,37 @@
 package ru.job4j.cache;
 
 import org.junit.Test;
-
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.*;
 
 public class CacheTest {
 
     @Test
-    public void add() {
+    public void whenAddNewVersionOfSameModel() {
         Cache cache = new Cache();
-        Base base = new Base(1, 0);
-        cache.add(base);
-
-        Base user1 = cache.get(1);
-        user1.setName("User 1");
-
-        Base user2 = cache.get(1);
-        user1.setName("User 2");
-        cache.add(user1);
-        cache.add(user2);
-        assertThat(cache.get(1), is(user2));
+        Base model1 = new Base(1, 1, "1");
+        Base model2 = new Base(1, 2, "2");
+        cache.add(model1);
+        assertThat(cache.add(model2), is(false));
     }
 
     @Test
     public void update() {
         Cache cache = new Cache();
-        Base base = new Base(1, 0);
-        cache.add(base);
-
-        Base user1 = cache.get(1);
-        user1.setName("User 1");
-        Base user2 = cache.get(1);
-        user1.setName("User 2");
-        Base user3 = cache.get(1);
-        user3.setName("User 3");
-
-        cache.add(user1);
-        cache.add(user2);
-        cache.update(user3);
-        assertThat(cache.get(1), is(user3));
-
+        Base base1 = new Base(1, 0, "1");
+        Base base2 = new Base(2, 0, "2");
+        cache.add(base1);
+        cache.add(base2);
+        Base newBase = cache.get(1);
+        newBase.setName("newBase1");
+        cache.update(newBase);
+        assertEquals(cache.get(1).getName(), "newBase1");
     }
 
     @Test
     public void delete() {
         Cache cache = new Cache();
-        Base base = new Base(1, 0);
+        Base base = new Base(1, 0, "1");
         cache.add(base);
         cache.delete(base);
         assertNull(cache.get(1));
@@ -55,7 +40,7 @@ public class CacheTest {
     @Test
     public void get() {
         Cache cache = new Cache();
-        Base base = new Base(1, 0);
+        Base base = new Base(1, 0, "1");
         cache.add(base);
         assertEquals(cache.get(1), base);
     }
@@ -63,7 +48,7 @@ public class CacheTest {
     @Test
     public void updateWithException() throws OptimisticException, InterruptedException {
         Cache cache = new Cache();
-        Base base = new Base(1, 0);
+        Base base = new Base(1, 0,"1");
         cache.add(base);
         Thread first = new Thread(() -> {
             Base user1 = cache.get(1);
@@ -79,6 +64,5 @@ public class CacheTest {
        second.start();
        first.join();
        second.join();
-
     }
 }

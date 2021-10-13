@@ -48,7 +48,7 @@ public class CacheTest {
     @Test
     public void updateWithException() throws OptimisticException, InterruptedException {
         Cache cache = new Cache();
-        Base base = new Base(1, 0,"1");
+        Base base = new Base(1, 0, "1");
         cache.add(base);
         Thread first = new Thread(() -> {
             Base user1 = cache.get(1);

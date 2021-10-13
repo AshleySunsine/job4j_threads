@@ -45,8 +45,8 @@ public class CacheTest {
         assertEquals(cache.get(1), base);
     }
 
-    @Test
-    public void updateWithException() throws OptimisticException, InterruptedException {
+    @Test (expected = OptimisticException.class)
+    public void updateWithException() {
         Cache cache = new Cache();
         Base base = new Base(1, 0, "1");
         cache.add(base);
@@ -62,7 +62,12 @@ public class CacheTest {
         });
        first.start();
        second.start();
-       first.join();
-       second.join();
+       try {
+           first.join();
+           second.join();
+       } catch (InterruptedException e) {
+           e.printStackTrace();
+       }
     }
+
 }

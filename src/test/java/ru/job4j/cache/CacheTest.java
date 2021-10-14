@@ -45,28 +45,13 @@ public class CacheTest {
         assertEquals(cache.get(1), base);
     }
 
-    @Test /*(expected = OptimisticException.class)*/
-    public void updateWithException() {
+    @Test(expected = OptimisticException.class)
+    public void whenAddToCacheAndUnsuccessfully() {
+        Base original = new Base(1, 0, "1");
+        Base updated = new Base(1, 1, "2");
+        updated.setName("Test");
         Cache cache = new Cache();
-        Base base = new Base(1, 0, "1");
-        cache.add(base);
-        Thread first = new Thread(() -> {
-            Base user1 = cache.get(1);
-            user1.setName("User 1");
-            cache.update(user1);
-        });
-        Thread second = new Thread(() -> {
-                Base user1 = cache.get(1);
-                user1.setName("User 222");
-                cache.update(user1);
-        });
-       first.start();
-       second.start();
-       try {
-           first.join();
-           second.join();
-       } catch (InterruptedException e) {
-           e.printStackTrace();
-       }
+        cache.add(original);
+        cache.update(updated);
     }
 }

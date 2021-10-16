@@ -17,7 +17,7 @@ public class ThreadPool implements ThreadPoolInterface {
                         Runnable task = tasks.poll();
                         task.run();
                     } catch (InterruptedException e) {
-                        e.printStackTrace();
+                        break;
                     }
                }
             });
@@ -43,6 +43,6 @@ public class ThreadPool implements ThreadPoolInterface {
         for (int i = 0; i < 21; i++) {
             pool.work(new Task());
         }
-            pool.shutdown();
+
     }
 }

@@ -4,29 +4,31 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ThreadPool implements ThreadPoolInterface {
-    private final int availableProcessors = Runtime.getRuntime().availableProcessors();
+
     private final List<Thread> threads = new CopyOnWriteArrayList<>();
-    private final SimpleBlockingQueue<Runnable> tasks = new SimpleBlockingQueue<>(availableProcessors);
+    private final SimpleBlockingQueue<Runnable> tasks;
+
+    public ThreadPool(int value) {
+        this.tasks = new SimpleBlockingQueue<>(value);
+        for (int i = 0; i < value; i++) {
+            Thread thread = new Thread(() -> {
+                while (true) {
+                    try {
+                        Runnable task = tasks.poll();
+                        task.run();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+               }
+            });
+            thread.start();
+            threads.add(thread);
+        }
+    }
 
     public void work(Runnable job) {
-        Thread jobThread = new Thread(job);
         try {
-         tasks.offer(jobThread);
-         if (threads.size() < availableProcessors) {
-         while (!tasks.isEmpty() && availableProcessors > threads.size()) {
-                 Thread thread = new Thread(tasks.poll());
-                 threads.add(thread);
-             }
-         }
-            if (!threads.isEmpty()) {
-                for (var thread : threads) {
-                    if (thread.getState().equals(Thread.State.NEW)) {
-                        thread.start();
-                    } else if (!thread.getState().equals(Thread.State.TERMINATED)) {
-                        threads.remove(thread);
-                    }
-                }
-            }
+            tasks.offer(job);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -37,12 +39,10 @@ public class ThreadPool implements ThreadPoolInterface {
     }
 
     public static void main(String[] args) throws InterruptedException {
-        ThreadPool pool = new ThreadPool();
+        ThreadPool pool = new ThreadPool(Runtime.getRuntime().availableProcessors());
         for (int i = 0; i < 21; i++) {
             pool.work(new Task());
         }
-        for (Thread thread : pool.threads) {
-            thread.join();
-        }
+            pool.shutdown();
     }
 }

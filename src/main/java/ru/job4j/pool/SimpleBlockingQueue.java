@@ -31,7 +31,6 @@ public class SimpleBlockingQueue<T> {
         }
         this.notify();
         return queue.poll();
-
     }
     public synchronized Queue<T> tasks() {
         return queue;

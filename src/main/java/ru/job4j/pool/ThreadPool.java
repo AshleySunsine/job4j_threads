@@ -12,12 +12,12 @@ public class ThreadPool implements ThreadPoolInterface {
         this.tasks = new SimpleBlockingQueue<>(value);
         for (int i = 0; i < value; i++) {
             Thread thread = new Thread(() -> {
-                while (true) {
+                while (!Thread.currentThread().isInterrupted()) {
                     try {
                         Runnable task = tasks.poll();
                         task.run();
                     } catch (InterruptedException e) {
-                        break;
+                        Thread.currentThread().interrupt();
                     }
                }
             });
@@ -43,6 +43,6 @@ public class ThreadPool implements ThreadPoolInterface {
         for (int i = 0; i < 21; i++) {
             pool.work(new Task());
         }
-
+        pool.shutdown();
     }
 }

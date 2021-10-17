@@ -8,12 +8,8 @@ import java.util.concurrent.RecursiveTask;
 public class IndexSearcher {
 
     public static void main(String[] args) {
-        /**
-         * listSize размер массива
-         * obj то, что мы ищем
-         */
         int listSize = 60;
-        int obj = 1;
+        int obj = 2;
         List<Integer> list = new ArrayList<>(listSize);
         for (int i = 0; i < listSize; i++) {
             list.add(i);
@@ -52,6 +48,7 @@ public class IndexSearcher {
 
         @Override
         protected Integer compute() {
+            int o = -1;
             if (start < finish) {
                 int mid = (start + finish) / 2;
                 System.out.println(Thread.currentThread().getName() + "->  " + "start=" + start + "; finish= " + finish + "; mid= " + mid + "; list= " + list.toString());
@@ -59,16 +56,23 @@ public class IndexSearcher {
                 Searcher rightSearcher = new Searcher(list, obj, mid + 1, finish);
                 leftSearcher.fork();
                 rightSearcher.fork();
-                rightSearcher.join();
-                leftSearcher.join();
+                int a = (int) rightSearcher.join();
+                int b = (int) leftSearcher.join();
+                if (a != (-1)) {
+                    o = a;
+                }
+                if (b != (-1)) {
+                    o = b;
+                }
+                o = -1;
             }
            if (start == finish) {
                 if (obj == list.get(start)) {
                     System.out.println("дебаг " + start);
-                    return start;
+                    o = start;
                 }
             }
-            return start;
+            return o;
         }
     }
 }

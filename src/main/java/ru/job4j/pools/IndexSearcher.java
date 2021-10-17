@@ -8,40 +8,43 @@ import java.util.concurrent.RecursiveTask;
 public class IndexSearcher {
 
     public static void main(String[] args) {
-        int listSize = 12;
-        String obj = "67";
-        List<String> list = new ArrayList<>(listSize);
+        /**
+         * listSize размер массива
+         * obj то, что мы ищем
+         */
+        int listSize = 60;
+        int obj = 1;
+        List<Integer> list = new ArrayList<>(listSize);
         for (int i = 0; i < listSize; i++) {
-            list.add(String.valueOf(i));
+            list.add(i);
         }
 
         IndexSearcher inSerch = new IndexSearcher();
-        if(list.size() > 10) {
+        if (list.size() > 10) {
             int index = inSerch.search(list, obj);
             System.out.println(index);
         } else {
             for (int i = 0; i < list.size(); i++) {
                 if (list.get(i).equals(obj)) {
-                    System.out.println(list.get(i));
+                    System.out.println("** " + i);
                 }
             }
         }
     }
 
-    private int search(List<String> list, String obj) {
+    private int search(List<Integer> list, Integer obj) {
         ForkJoinPool fjp = new ForkJoinPool();
-        return (int)fjp.invoke(new Searcher<String>(list, obj, 0, list.size() - 1));
+        return (int) fjp.invoke(new Searcher(list, obj, 0, list.size() - 1));
     }
 
-    private class Searcher<T> extends RecursiveTask {
-        List<T> list;
-        T obj;
+    private class Searcher extends RecursiveTask {
+        List<Integer> list;
+        int obj;
         int start;
         int finish;
-        int zzz;
 
-        public Searcher(List<T> list, T obj, int start, int finish) {
-            this.list = list.subList(start, finish);
+        public Searcher(List<Integer> list, int obj, int start, int finish) {
+            this.list = list;
             this.obj = obj;
             this.start = start;
             this.finish = finish;
@@ -49,28 +52,23 @@ public class IndexSearcher {
 
         @Override
         protected Integer compute() {
-            if (start == finish) {
-                if (list.get(start).equals(obj)) {
-                return start;
-            } else {
-                    return -1;
-                }
-            } else {
+            if (start < finish) {
                 int mid = (start + finish) / 2;
-                System.out.println(Thread.currentThread().getName() + " ->  " + "s=" + start + "; f= " + finish + "; m= " + mid);
-
-               Searcher<T> leftSearcher = new Searcher<>(list, obj, start, mid);
-                Searcher<T> rightSearcher = new Searcher<>(list, obj, mid + 1, finish);
+                System.out.println(Thread.currentThread().getName() + "->  " + "start=" + start + "; finish= " + finish + "; mid= " + mid + "; list= " + list.toString());
+                Searcher leftSearcher = new Searcher(list, obj, start, mid);
+                Searcher rightSearcher = new Searcher(list, obj, mid + 1, finish);
                 leftSearcher.fork();
                 rightSearcher.fork();
-
-                int right = (int)rightSearcher.join();
-                int left = (int) leftSearcher.join();
-                if (right != (-1)) {
-                    return right;
-                }
-                return left;
+                rightSearcher.join();
+                leftSearcher.join();
             }
+           if (start == finish) {
+                if (obj == list.get(start)) {
+                    System.out.println("дебаг " + start);
+                    return start;
+                }
+            }
+            return start;
         }
     }
 }

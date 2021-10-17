@@ -8,8 +8,8 @@ import java.util.concurrent.RecursiveTask;
 public class IndexSearcher {
 
     public static void main(String[] args) {
-        int listSize = 60;
-        int obj = 2;
+        int listSize = 15;
+        int obj = 8;
         List<Integer> list = new ArrayList<>(listSize);
         for (int i = 0; i < listSize; i++) {
             list.add(i);
@@ -33,13 +33,13 @@ public class IndexSearcher {
         return (int) fjp.invoke(new Searcher(list, obj, 0, list.size() - 1));
     }
 
-    private class Searcher extends RecursiveTask {
-        List<Integer> list;
-        int obj;
+    private class Searcher<T> extends RecursiveTask {
+        List<T> list;
+        T obj;
         int start;
         int finish;
 
-        public Searcher(List<Integer> list, int obj, int start, int finish) {
+        public Searcher(List<T> list, T obj, int start, int finish) {
             this.list = list;
             this.obj = obj;
             this.start = start;
@@ -56,19 +56,19 @@ public class IndexSearcher {
                 Searcher rightSearcher = new Searcher(list, obj, mid + 1, finish);
                 leftSearcher.fork();
                 rightSearcher.fork();
-                int a = (int) rightSearcher.join();
-                int b = (int) leftSearcher.join();
-                if (a != (-1)) {
+                Integer a = (Integer) rightSearcher.join();
+                Integer b = (Integer) leftSearcher.join();
+                if (!a.equals(-1)) {
                     o = a;
                 }
-                if (b != (-1)) {
+                if (!b.equals(-1)) {
                     o = b;
                 }
                 o = -1;
             }
            if (start == finish) {
-                if (obj == list.get(start)) {
-                    System.out.println("дебаг " + start);
+                if (obj.equals(list.get(start))) {
+                    System.out.println("Дебаг. Найденый элемент, индекс " + start);
                     o = start;
                 }
             }

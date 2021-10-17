@@ -1,8 +1,7 @@
-/*package ru.job4j.pools;
+package ru.job4j.pools;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveTask;
 
@@ -31,7 +30,7 @@ public class IndexSearcher {
 
     private int search(List<String> list, String obj) {
         ForkJoinPool fjp = new ForkJoinPool();
-        return (int)fjp.invoke(new Searcher<String>(list, obj, 0, list.size() - 1, 0));
+        return (int)fjp.invoke(new Searcher<String>(list, obj, 0, list.size() - 1));
     }
 
     private class Searcher<T> extends RecursiveTask {
@@ -41,12 +40,11 @@ public class IndexSearcher {
         int finish;
         int zzz;
 
-        public Searcher(List<T> list, T obj, int start, int finish, int zzz) {
+        public Searcher(List<T> list, T obj, int start, int finish) {
             this.list = list.subList(start, finish);
             this.obj = obj;
             this.start = start;
             this.finish = finish;
-            this.zzz = zzz;
         }
 
         @Override
@@ -58,7 +56,6 @@ public class IndexSearcher {
                     return -1;
                 }
             } else {
-                int zzz;
                 int mid = (start + finish) / 2;
                 System.out.println(Thread.currentThread().getName() + " ->  " + "s=" + start + "; f= " + finish + "; m= " + mid);
 
@@ -77,4 +74,3 @@ public class IndexSearcher {
         }
     }
 }
-*/

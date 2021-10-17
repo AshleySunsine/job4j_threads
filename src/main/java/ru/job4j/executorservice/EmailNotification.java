@@ -17,6 +17,13 @@ public class EmailNotification implements EmailNotificationInterface {
     @Override
     public void close() {
         pool.shutdown();
+        while (!pool.isTerminated()) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
@@ -37,12 +44,5 @@ public class EmailNotification implements EmailNotificationInterface {
             }
         });
         emailNotification.close();
-        while (!emailNotification.pool.isTerminated()) {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
     }
 }

@@ -20,7 +20,7 @@ public class IndexSearcher {
 
     private int search(Integer[] list, Integer obj) {
         ForkJoinPool fjp = new ForkJoinPool();
-        return (int) fjp.invoke(new Searcher(list, obj, 0, list.length - 1));
+        return (int) fjp.invoke(new Searcher<Integer>(list, obj, 0, list.length - 1));
     }
 
     private class Searcher<T> extends RecursiveTask {
@@ -51,8 +51,8 @@ public class IndexSearcher {
             return easySearch(list, obj);
             }
                 int mid = (start + finish) / 2;
-                Searcher leftSearcher = new Searcher(list, obj, start, mid);
-                Searcher rightSearcher = new Searcher(list, obj, mid + 1, finish);
+                Searcher<T> leftSearcher = new Searcher<>(list, obj, start, mid);
+                Searcher<T> rightSearcher = new Searcher<>(list, obj, mid + 1, finish);
                 leftSearcher.fork();
                 rightSearcher.fork();
                 Integer a = (Integer) rightSearcher.join();
@@ -60,4 +60,5 @@ public class IndexSearcher {
                 return a > b ? a : b;
             }
         }
+
 }

@@ -1,4 +1,4 @@
-package ru.job4j.pools.completableFuture;
+package ru.job4j.pools.completablefuture;
 
 import java.util.HashMap;
 import java.util.Map;

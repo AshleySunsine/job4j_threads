@@ -1,27 +1,9 @@
-package ru.job4j.pools.completableFuture;
+package ru.job4j.pools.completablefuture;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
-public class ThenRun {
-    public static void main(String[] args) throws Exception {
-        CompletableFuture<Void> gtt = goToTrash();
-        gtt.thenRun(() -> {
-            int count = 0;
-            while (count < 3) {
-                System.out.println("Сын: я мою руки");
-                try {
-                    TimeUnit.MILLISECONDS.sleep(500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                count++;
-            }
-            System.out.println("Сын: Я помыл руки");
-        });
-        iWork();
-    }
-
+public class CompletableFutureExeciseRunAsync {
     private static void iWork() throws InterruptedException {
         int count = 0;
         while (count < 10) {
@@ -43,5 +25,10 @@ public class ThenRun {
                     System.out.println("Сын: Мам/Пап, я вернулся!");
                 }
         );
+    }
+
+    public static void main(String[] args) throws Exception {
+        CompletableFuture<Void> gtt = goToTrash();
+        iWork();
     }
 }

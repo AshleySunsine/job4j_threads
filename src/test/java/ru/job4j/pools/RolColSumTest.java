@@ -1,4 +1,4 @@
-package ru.job4j.pools;
+/*package ru.job4j.pools;
 
 import org.junit.Test;
 
@@ -14,5 +14,5 @@ public class RolColSumTest {
 
     /*@Test
     public void asyncSum() {
-    }*/
-}
+    }
+}*/

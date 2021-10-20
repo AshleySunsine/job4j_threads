@@ -23,7 +23,7 @@ public class IndexSearcher<T> {
             this.finish = finish;
         }
 
-        private int easySearch(int start, int finish) {
+        private int easySearch() {
             for (int i = start; i <= finish; i++) {
                 if (list[i].equals(obj)) {
                     return i;
@@ -35,7 +35,7 @@ public class IndexSearcher<T> {
         @Override
         protected Integer compute() {
             if ((finish - start) <= 10) {
-            return easySearch(start, finish);
+            return easySearch();
             }
                 int mid = (start + finish) / 2;
                 Searcher leftSearcher = new Searcher(list, obj, start, mid);

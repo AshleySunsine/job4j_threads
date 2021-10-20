@@ -3,27 +3,14 @@ package ru.job4j.pools;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveTask;
 
-public class IndexSearcher {
+public class IndexSearcher<T> {
 
-    public static void main(String[] args) {
-        int listSize = 15;
-        int obj = 3;
-        Integer[] list = new Integer[listSize];
-        for (int i = 0; i < listSize; i++) {
-            list[i] = i;
-        }
-
-        IndexSearcher inSerch = new IndexSearcher();
-        int index = inSerch.search(list, obj);
-        System.out.println(index);
-    }
-
-    private int search(Integer[] list, Integer obj) {
+    public int search(T[] list, T obj) {
         ForkJoinPool fjp = new ForkJoinPool();
-        return (int) fjp.invoke(new Searcher<Integer>(list, obj, 0, list.length - 1));
+        return (int) fjp.invoke(new Searcher(list, obj, 0, list.length - 1));
     }
 
-    private class Searcher<T> extends RecursiveTask {
+    private class Searcher extends RecursiveTask {
       private final T[] list;
       private final T obj;
       private final int start;
@@ -36,9 +23,9 @@ public class IndexSearcher {
             this.finish = finish;
         }
 
-        private int easySearch(T[] mass, T obj) {
-            for (int i = 0; i < mass.length; i++) {
-                if (mass[i].equals(obj)) {
+        private int easySearch(int start, int finish) {
+            for (int i = start; i <= finish; i++) {
+                if (list[i].equals(obj)) {
                     return i;
                 }
             }
@@ -48,11 +35,11 @@ public class IndexSearcher {
         @Override
         protected Integer compute() {
             if ((finish - start) <= 10) {
-            return easySearch(list, obj);
+            return easySearch(start, finish);
             }
                 int mid = (start + finish) / 2;
-                Searcher<T> leftSearcher = new Searcher<>(list, obj, start, mid);
-                Searcher<T> rightSearcher = new Searcher<>(list, obj, mid + 1, finish);
+                Searcher leftSearcher = new Searcher(list, obj, start, mid);
+                Searcher rightSearcher = new Searcher(list, obj, mid + 1, finish);
                 leftSearcher.fork();
                 rightSearcher.fork();
                 Integer a = (Integer) rightSearcher.join();
@@ -61,4 +48,16 @@ public class IndexSearcher {
             }
         }
 
+    public static void main(String[] args) {
+        int listSize = 15;
+        int obj = 3;
+        Integer[] list = new Integer[listSize];
+        for (int i = 0; i < listSize; i++) {
+            list[i] = i;
+        }
+
+        IndexSearcher<Integer> inSerch = new IndexSearcher<>();
+        int index = inSerch.search(list, obj);
+        System.out.println(index);
+    }
 }

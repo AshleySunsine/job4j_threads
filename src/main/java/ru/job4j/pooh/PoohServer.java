@@ -13,6 +13,9 @@ import java.util.concurrent.Executors;
 Use next Req in cmd:
 curl -X POST -d "temperature=18" http://localhost:9000/queue/weather
 curl -X GET http://localhost:9000/queue/weather
+
+curl -X POST -d "temperadfbse=13" http://localhost:9000/topic/weather
+curl -X GET http://localhost:9000/topic/weather/admin111
  */
 
 public class PoohServer {

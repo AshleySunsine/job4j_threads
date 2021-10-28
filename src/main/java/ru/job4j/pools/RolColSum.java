@@ -26,21 +26,17 @@ public class RolColSum {
         int vertical = matrix[0].length;
         int[] col = new int[gorizontal];
         int[] row = new int[vertical];
+        Sums[] sums = new Sums[gorizontal];
         for (int c = 0; c < gorizontal; c++) {
             int colSum = 0;
+            int rowSum = 0;
             for (int r = 0; r < vertical; r++) {
                 colSum += matrix[c][r];
+                rowSum += matrix[c][r];
+                row[r] = rowSum;
             }
             col[c] = colSum;
         }
-        for (int r = 0; r < gorizontal; r++) {
-            int rowSum = 0;
-            for (int c = 0; c < vertical; c++) {
-                rowSum += matrix[c][r];
-            }
-            row[r] = rowSum;
-        }
-        Sums[] sums = new Sums[col.length];
         for (int i = 0; i < sums.length; i++) {
             sums[i] = new Sums(col[i], row[i]);
         }

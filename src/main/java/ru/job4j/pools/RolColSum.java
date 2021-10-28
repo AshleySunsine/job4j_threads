@@ -48,8 +48,10 @@ public class RolColSum {
     }
 
     public static Sums[] asyncSum(int[][] matrix) throws ExecutionException, InterruptedException {
-        CompletableFuture<Sums[]> s = sumCol(matrix).thenCombine(sumRow(matrix),
-                (r1, r2) -> {
+        CompletableFuture<Sums[]> s = CompletableFuture.supplyAsync(() -> {
+            int[][] o = sumAll(matrix);
+            int[] r1 = o[0];
+            int[] r2 = o[1];
             int val = matrix.length;
             Sums[] sums = new Sums[val];
             for (int i = 0; i < val; i++) {
@@ -60,36 +62,29 @@ public class RolColSum {
         return s.get();
     }
 
-    private static CompletableFuture<int[]> sumCol(int[][] matrix) {
+    private static int[][] sumAll(int[][] matrix) {
         int gorizontal = matrix.length;
         int vertical = matrix[0].length;
-        return CompletableFuture.supplyAsync(() -> {
-            int[] colL = new int[gorizontal];
-            for (int c = 0; c < gorizontal; c++) {
-                int colSum = 0;
-                for (int r = 0; r < vertical; r++) {
-                    colSum += matrix[c][r];
+        int[] colL = new int[gorizontal];
+        int[] rowL = new int[gorizontal];
+        int[][] ret = new int[gorizontal][vertical];
+        try {
+            ret = CompletableFuture.supplyAsync(() -> {
+                for (int c = 0; c < gorizontal; c++) {
+                    int colSum = 0;
+                    int rowSum = 0;
+                    for (int r = 0; r < vertical; r++) {
+                        colSum += matrix[c][r];
+                        rowSum += matrix[c][r];
+                        rowL[r] = rowSum;
+                    }
+                    colL[c] = colSum;
                 }
-                colL[c] = colSum;
-            }
-            return colL;
-        });
-
-    }
-
-    private static CompletableFuture<int[]> sumRow(int[][] matrix) {
-        int gorizontal = matrix.length;
-        int vertical = matrix[0].length;
-        return  CompletableFuture.supplyAsync(() -> {
-            int[] rowL = new int[vertical];
-            for (int r = 0; r < gorizontal; r++) {
-                int rowSum = 0;
-                for (int c = 0; c < vertical; c++) {
-                    rowSum += matrix[c][r];
-                }
-                rowL[r] = rowSum;
-            }
-            return rowL;
-        });
+                return new int[][]{rowL, colL};
+            }).get();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ret;
     }
 }

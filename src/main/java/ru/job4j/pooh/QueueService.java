@@ -52,3 +52,4 @@ public class QueueService implements Service {
         return queue.getOrDefault(req.getSourceName(), new ConcurrentLinkedQueue<>()).poll();
     }
 }
+/* Изменения для задачи 3.4. Временное хранение. git stash. [#309409]*/
